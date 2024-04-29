@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TasksRequest;
+use App\Models\Task;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Task::class, 'task');
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('tasks.index');
+        $tasks = $request->user()->tasks()->paginate(15);
+        return view('tasks.index', ['tasks' => $tasks]);
     }
 
     /**
@@ -26,32 +35,35 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TasksRequest $request)
     {
-        //
+        $request->user()->tasks()->create($request->validated());
+        return redirect(route('tasks.index'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id): View
+    public function edit(Task $task): View
     {
-        return view('tasks.edit');
+        return view('tasks.edit', ['task' => $task]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TasksRequest $request, Task $task)
     {
-        //
+        $task->update($request->validated());
+        return view('tasks.edit', ['task' => $task]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, Task $task): RedirectResponse
     {
-        //
+        $task->delete();
+        return redirect(route('tasks.index'));
     }
 }

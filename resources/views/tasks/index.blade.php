@@ -37,30 +37,48 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Apple MacBook Pro 17"
-                        </th>
-                        <td class="px-6 py-4">
-                            Silver
-                        </td>
-                        <td class="px-6 py-4">
-                            Laptop
-                        </td>
-                        <td class="px-6 py-4">
-                            $2999
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Удалить</a>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Изменить</a>
-                        </td>
-                    </tr>
+                        @foreach($tasks as $task)
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ $task->name }}
+                                </th>
+                                <td class="px-6 py-4">
+                                    {{ $task->description }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $task->created_at }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $task->import }}
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <form method="POST" action="{{ route('tasks.destroy', $task) }}">
+                                        @csrf
+                                        @method('delete')
+                                        <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline" type="submit">Удалить</button>
+                                    </form>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <form method="GET" action="{{ route('tasks.edit', $task) }}">
+                                        @csrf
+                                        <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline" type="submit">Изменить</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                @if(! $tasks->items())
+                                    Задач пока нет
+                                @endif
+                            </th>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-
+            <div class="mt-3">
+                {{ $tasks->links() }}
+            </div>
         </div>
         <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
             <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
